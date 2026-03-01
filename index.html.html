@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nogaa 🫂❤️</title>
+    <style>
+        body { 
+            background: #2d0b1e; 
+            background-image: radial-gradient(circle at 20% 30%, rgba(255, 105, 180, 0.15) 0%, transparent 20%),
+                              radial-gradient(circle at 80% 70%, rgba(255, 105, 180, 0.15) 0%, transparent 20%);
+            color: white; font-family: 'Arial', sans-serif; text-align: center; margin: 0; min-height: 100vh; overflow-x: hidden; line-height: 1.6; 
+            position: relative;
+        }
+
+        /* --- تأثير النجوم --- */
+        .star {
+            position: fixed;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: twinkle var(--duration) infinite ease-in-out;
+            z-index: 0;
+            pointer-events: none;
+        }
+        @keyframes twinkle {
+            0%, 100% { transform: scale(1); opacity: 0.2; }
+            50% { transform: scale(1.4); opacity: 0.8; }
+        }
+
+        /* --- تأثير القلوب المتحركة (المتساقطة) --- */
+        .falling-heart {
+            position: fixed;
+            top: -10%;
+            color: #ff69b4;
+            font-size: 20px;
+            user-select: none;
+            pointer-events: none;
+            z-index: 15;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(360deg);
+            }
+        }
+
+        .static-hearts-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0;
+        }
+        .static-heart {
+            position: absolute; color: rgba(255, 105, 180, 0.6); font-size: 20px;
+            filter: drop-shadow(0 0 5px rgba(255, 105, 180, 0.3));
+        }
+
+        #loader { position: fixed; width: 100%; height: 100%; background: #2d0b1e; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; transition: 0.3s; }
+        .heart-loader { font-size: 60px; animation: pulse 1s infinite; color: #ff69b4; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+        .screen { display: none; width: 100%; min-height: 100vh; flex-direction: column; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
+        .active { display: flex; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .card { background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(10px); border-radius: 25px; padding: 25px; width: 95%; max-width: 450px; border: 1px solid rgba(255,105,180,0.2); box-shadow: 0 15px 35px rgba(0,0,0,0.3); margin-bottom: 20px; z-index: 5; position: relative; }
+        
+        /* --- ستايل الكروت الإضافية --- */
+        .extra-card {
+            background: rgba(255, 105, 180, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            width: 95%;
+            max-width: 450px;
+            border: 1px solid rgba(255, 105, 180, 0.3);
+            margin-bottom: 15px;
+            text-align: right;
+            z-index: 5;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .extra-card b { color: #ff69b4; font-size: 16px; display: block; margin-bottom: 5px; }
+
+        .profile-img-container { margin-bottom: 15px; display: flex; justify-content: center; }
+        .lock-img { width: 110px; height: 110px; border-radius: 50%; border: 3px solid #ff69b4; object-fit: cover; box-shadow: 0 0 20px rgba(255, 105, 180, 0.4); background: #444; }
+
+        .photo-gallery { display: flex; flex-direction: column; gap: 25px; margin-top: 20px; }
+        .photo-item { width: 100%; background: rgba(0,0,0,0.3); border-radius: 15px; padding: 10px; border: 1px solid rgba(255, 105, 180, 0.2); }
+        .photo-item img { width: 100%; height: auto; border-radius: 10px; display: block; background: #333; min-height: 200px; }
+        .caption { margin-top: 10px; font-size: 14px; color: #ffb6c1; font-weight: bold; }
+
+        .timer-title { color: #ffb6c1; font-weight: bold; margin-bottom: 10px; display: block; font-size: 14px;}
+        .timer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+        .timer-box { background: rgba(255, 105, 180, 0.12); padding: 8px 2px; border-radius: 12px; border: 1px solid rgba(255,105,180,0.3); }
+        .timer-box span { display: block; font-size: 16px; color: #fff; font-weight: bold; }
+        .timer-label { font-size: 10px; color: #ffb6c1; }
+
+        .date-badge {
+            background: linear-gradient(45deg, rgba(255, 105, 180, 0.2), rgba(255, 20, 147, 0.3));
+            border: 1px dashed #ff69b4; padding: 10px; border-radius: 15px; margin-top: 15px;
+            font-weight: bold; color: #fff; display: inline-block; font-size: 15px;
+        }
+
+        .glass-box {
+            background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(15px); border-radius: 25px; padding: 25px;
+            width: 95%; max-width: 450px; border: 1px solid rgba(255, 105, 180, 0.2); box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            text-align: right; margin-bottom: 20px; z-index: 5; position: relative;
+        }
+        .main-title { color: #ff69b4; font-weight: bold; font-size: 1.2rem; }
+        .love-message { font-size: 15px; color: #fff; }
+        .معاكسة { color: #ffb6c1; font-weight: bold; }
+
+        input { padding: 15px; border-radius: 12px; border: 1px solid #ff69b4; background: rgba(255,255,255,0.1); color: white; text-align: center; width: 80%; font-size: 18px; margin-bottom: 15px; outline: none; }
+        button { background: #ff69b4; color: white; border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; z-index: 10; position: relative; }
+
+        .footer-rights { margin-top: 20px; padding-bottom: 30px; font-size: 14px; color: #ffb6c1; }
+        .footer-rights b { color: #fff; border-bottom: 1px solid #ff69b4; }
+
+        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; }
+        .modal-content { background: #2d0b1e; border-radius: 25px; padding: 30px; width: 85%; max-width: 400px; border: 2px solid #ff69b4; }
+
+        #youtube-player { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="starsContainer"></div>
+    <div id="staticHearts" class="static-hearts-container"></div>
+    <div id="youtube-player"></div>
+
+    <div id="loader">
+        <div class="heart-loader">❤️</div>
+        <h2 style="margin-top: 20px; color: #ff69b4;">ثواني يا نوجاا معلش ❤️😂✨</h2>
+    </div>
+
+    <div id="step1" class="screen active">
+        <div class="card">
+            <div class="profile-img-container">
+                <img src="https://i.postimg.cc/ZK3Xpj2p/8.jpg" id="lockImg" class="lock-img" alt="Nogaa Profile"> 
+            </div>
+            <h2>جاهزة👀</h2>
+            <p>اكتبي تاريخ ميلادك يا نوجاا🌚</p>
+            <input type="text" id="passInput" placeholder="372006">
+            <button onclick="checkPass()">افتحي يا نوجاا ❤️</button>
+        </div>
+    </div>
+
+    <div id="step2" class="screen" style="justify-content: flex-start; overflow-y: auto;">
+        <div class="card" style="background: rgba(255, 105, 180, 0.2); border: 2px solid #ff69b4;">
+            <h3 style="font-size: 2.2rem; margin: 0;">🫂❤️ Nogaa & Abdo</h3>
+            <p>❤️🌍Together Forever❤️🌍</p>
+        </div>
+
+        <div class="card">
+            <span class="timer-title">دي سنين عمرك الدائمة يا نوجاا🥹❤️</span>
+            <div class="timer-grid">
+                <div class="timer-box"><span id="ageYears">0</span><div class="timer-label">سنة</div></div>
+                <div class="timer-box"><span id="ageMonths">0</span><div class="timer-label">شهور</div></div>
+                <div class="timer-box"><span id="ageWeeks">0</span><div class="timer-label">أسابيع</div></div>
+                <div class="timer-box"><span id="ageDays">0</span><div class="timer-label">أيام</div></div>
+                <div class="timer-box"><span id="ageHours">0</span><div class="timer-label">ساعات</div></div>
+                <div class="timer-box"><span id="ageMinutes">0</span><div class="timer-label">دقائق</div></div>
+            </div>
+            <div class="timer-box" style="margin-top: 8px;"><span id="ageSeconds">0</span><div class="timer-label">إجمالي الثواني</div></div>
+        </div>
+
+        <div class="card">
+            <span class="timer-title">دي بداية عمر جديد ليا من يوم ماشوفتك🥹❤️</span>
+            <div class="timer-grid">
+                <div class="timer-box"><span id="meetYears">0</span><div class="timer-label">سنة</div></div>
+                <div class="timer-box"><span id="meetMonths">0</span><div class="timer-label">شهور</div></div>
+                <div class="timer-box"><span id="meetWeeks">0</span><div class="timer-label">أسابيع</div></div>
+                <div class="timer-box"><span id="meetDays">0</span><div class="timer-label">أيام</div></div>
+                <div class="timer-box"><span id="meetHours">0</span><div class="timer-label">ساعات</div></div>
+                <div class="timer-box"><span id="meetMins">0</span><div class="timer-label">دقائق</div></div>
+            </div>
+            <div class="timer-box" style="margin-top: 8px;"><span id="meetSecs">0</span><div class="timer-label">ثواني</div></div>
+            <div class="date-badge">📅 تاريخ مقابلتنا: 29-12-2024</div>
+        </div>
+
+        <div class="card">
+            <h3 style="color: #ffb6c1; margin-top: 0;">❤️🌍 Nogaa In Her Own World</h3>
+            <div class="photo-gallery">
+                <div class="photo-item"><img src="https://i.postimg.cc/ry7vD7hZ/4.jpg" alt="1"><div class="caption">كل لحظه ف عمري بتمنى تكون معاكي🥹❤️</div></div>
+                <div class="photo-item"><img src="https://i.postimg.cc/L4Jc6mVw/1.jpg" alt="2"><div class="caption">العمر كلو سوا يا افيونتي🫂❤️</div></div>
+                <div class="photo-item"><img src="https://i.postimg.cc/SQHwnHTx/2.jpg" alt="3"><div class="caption">اليوم ده بـ تفاصيله 🥰🐻</div></div>
+                <div class="photo-item"><img src="https://i.postimg.cc/VLM2n4pf/6.jpg" alt="3"><div class="caption">ذكرياتي معاكي عمري ماهنساها🥰❤️</div></div>
+                <div class="photo-item"><img src="https://i.postimg.cc/7Pjp5jsh/5.jpg" alt="3"><div class="caption">خطواتنا سوا لاخر العمر😘❤️</div></div>
+                <div class="photo-item"><img src="https://i.postimg.cc/ZK3Xpj2p/8.jpg" alt="3"><div class="caption">متهيألي مفيش رقة في الدنيا ممكن تتجمع في ملامح حد كدا ببساطه🥹❤️</div></div>
+                <div class="photo-item"><img src="https://i.postimg.cc/9QhKpZHt/9.jpg" alt="3"><div class="caption">كل ما أركز فيكي بشوفك أحلى 🥹❤️</div></div>
+                <div class="photo-item"><img src="https://i.postimg.cc/6pXg0nxh/10.jpg" alt="3"><div class="caption">جمالك ورقتك ميتوصفوش 😍</div></div>
+                <div class="photo-item"><img src="https://i.postimg.cc/PrZ0YK9J/7.jpg" alt="3"><div class="caption">الأسود على الأسد يمنع الحسد 😉❤️</div></div>
+                <div class="photo-item"><img src="https://i.postimg.cc/59DZXD70/3.jpg" alt="3"><div class="caption">في حضنك الدنيا بتضحكلي 🫂❤️</div></div>
+                <div class="photo-item"><img src="https://i.postimg.cc/65WcM01D/11.jpg" alt="3"><div class="caption">أول صورة ومن بعدها قلبي دق ❤️</div></div>
+            </div>
+        </div>
+
+        <div class="glass-box">
+            <div style="text-align: center; margin-bottom: 10px;">
+                <span style="font-size: 20px;">💌</span>
+                <span class="main-title">الرسالة دي ليكي يا نوجاا..</span>
+            </div>
+            <p class="love-message">
+				طبعا طبعا أنا يوم ما عرفتك مكنتش خاااالص متوقع أن احنا ممكن نكون لبعض بس اهو قدر ولطف ووقعت وقعت اي غرقت ف حبك🥹❤️
+				نفسي بجد نكمل لاخر العمر مع بعض ي حبيبي وحبيب ايامي وعشان مش لوحدك ال بتهتمي بالتفاصيل اول يوم رحنا في السينما يوم ما اعترفتلك بحبي 
+				ملناش في اي صوره ولا اي ذكره عشان كدا حطيت الاغنيه بتاعت الفيلم ال سمعناه بحبك يا احلي حد ف الدنيا 🥹❤️❤️❤️
+                
+                <span class="معاكسة">يا أجمل صدفة حصلتلي يا حتة قمر نازلة من السما 😉💖💨</span>
+            </p>
+        </div>
+
+        <div class="extra-card">
+            <b>الرسالة الأولى ✨</b>
+            محبتش 
+        </div>
+
+        <div class="extra-card">
+            <b>الرسالة الثانية ✨</b>
+            ولا بحب
+        </div>
+
+        <div class="extra-card">
+            <b>الرسالة الثالثة ✨</b>
+            ولا هحب حد  
+        </div>
+
+        <div class="extra-card">
+            <b>الرسالة الرابعة ✨</b>
+            زي ما حبيتك يا اجمل حاجة في حياتي 😘❤️
+        </div>
+
+        <button onclick="showFinalModal()" style="width: 85%; margin-top: 10px;">دوسي هنا فيه حاجه كمان هقولهالك😂❤️</button>
+        <div class="footer-rights">Designed by <b>Engineer Omar Hamdy</b> </div>
+    </div>
+
+    <div id="finalModal" class="modal">
+        <div class="modal-content">
+            <h2 style="color: #ff69b4;">نوجاا😍</h2>
+            <p>أنا فعلاً حظي حلو إنك في حياتي، وبتمنالك كل حاجة حلوة في الدنيا ❤️.</p>
+            <button onclick="closeModal()" style="width: 100%;">خلصنا يا غزال😂❤️</button>
+        </div>
+    </div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <script>
+        // --- سكريبت توليد النجوم ---
+        function generateStars() {
+            const container = document.getElementById('starsContainer');
+            for (let i = 0; i < 60; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = (Math.random() * 3 + 1) + 'px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+                container.appendChild(star);
+            }
+        }
+        generateStars();
+
+        // --- سكريبت القلوب المتساقطة ---
+        function createFallingHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('falling-heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            heart.style.opacity = Math.random();
+            heart.style.fontSize = (Math.random() * 10 + 15) + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }
+
+        let player;
+        const videoId = "HVgy8Ge0GJQ";
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-player', {
+                height: '0', width: '0', videoId: videoId,
+                playerVars: { 'autoplay': 0, 'loop': 1, 'playlist': videoId }
+            });
+        }
+
+        function playMusic() {
+            if (player && player.playVideo) { player.playVideo(); }
+        }
+
+        function generateStaticHearts() {
+            const container = document.getElementById('staticHearts');
+            for (let i = 0; i < 100; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('static-heart');
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = Math.random() * 100 + 'vh';
+                heart.style.opacity = (Math.random() * 0.4) + 0.3;
+                heart.style.transform = `rotate(${Math.random() * 360}deg) scale(${(Math.random() * 0.5) + 0.5})`;
+                container.appendChild(heart);
+            }
+        }
+        generateStaticHearts();
+
+        window.onload = () => {
+            setTimeout(() => {
+                document.getElementById('loader').style.opacity = '0';
+                setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
+            }, 1000);
+        };
+
+        function checkPass() {
+            const pass = document.getElementById('passInput').value;
+            if(pass === '372006') {
+                document.getElementById('step1').classList.remove('active');
+                document.getElementById('step2').classList.add('active');
+                playMusic();
+                // تشغيل تأثير القلوب المتساقطة عند فتح الصفحة
+                setInterval(createFallingHeart, 300);
+                startCounters();
+            } else {
+                alert('الباسورد غلط! ركزي يا نوجاا 😉');
+            }
+        }
+
+        function startCounters() {
+            const birthDate = new Date("2006-07-03T00:00:00");
+            const meetDate = new Date("2024-12-29T00:00:00");
+            const update = () => {
+                const now = new Date();
+                const diffAge = now - birthDate;
+                document.getElementById('ageYears').innerText = Math.floor(diffAge / 31536000000);
+                document.getElementById('ageMonths').innerText = Math.floor(diffAge / 2629746000).toLocaleString();
+                document.getElementById('ageWeeks').innerText = Math.floor(diffAge / 604800000).toLocaleString();
+                document.getElementById('ageDays').innerText = Math.floor(diffAge / 86400000).toLocaleString();
+                document.getElementById('ageHours').innerText = Math.floor(diffAge / 3600000).toLocaleString();
+                document.getElementById('ageMinutes').innerText = Math.floor(diffAge / 60000).toLocaleString();
+                document.getElementById('ageSeconds').innerText = Math.floor(diffAge / 1000).toLocaleString();
+
+                const diffMeet = now - meetDate;
+                document.getElementById('meetYears').innerText = Math.floor(diffMeet / 31536000000);
+                document.getElementById('meetMonths').innerText = Math.floor(diffMeet / 2629746000).toLocaleString();
+                document.getElementById('meetWeeks').innerText = Math.floor(diffMeet / 604800000).toLocaleString();
+                document.getElementById('meetDays').innerText = Math.floor(diffMeet / 86400000).toLocaleString();
+                document.getElementById('meetHours').innerText = Math.floor(diffMeet / 3600000).toLocaleString();
+                document.getElementById('meetMins').innerText = Math.floor(diffMeet / 60000).toLocaleString();
+                document.getElementById('meetSecs').innerText = Math.floor(diffMeet / 1000).toLocaleString();
+            };
+            setInterval(update, 1000);
+            update();
+        }
+
+        function showFinalModal() { document.getElementById('finalModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('finalModal').style.display = 'none'; }
+    </script>
+</body>
+</html>
